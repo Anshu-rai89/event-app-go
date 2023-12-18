@@ -43,7 +43,7 @@ func GetAllEvents() ([]Event, error) {
 	query := `SELECT * FROM events`
 
 	rows, err := db.DB.Query(query)
-
+	defer rows.Close()
 	if err != nil {
 		return nil, err
 	}
