@@ -6,10 +6,11 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var DB sql.DB
+var DB *sql.DB
 
 func InitDB() {
-	DB, err := sql.Open("sqlite3", "api.db")
+	var err error
+	DB, err = sql.Open("sqlite3", "api.db")
 
 	if err != nil {
 		panic("Couldn't connect to DB")
@@ -17,6 +18,7 @@ func InitDB() {
 
 	DB.SetMaxOpenConns(10)
 	DB.SetMaxIdleConns(5)
+	createTable()
 }
 
 func createTable() {

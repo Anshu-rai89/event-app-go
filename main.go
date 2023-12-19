@@ -9,8 +9,8 @@ import (
 )
 
 func main() {
+	db.InitDB()
 	app := gin.Default()
-
 	app.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"msg": "Hello world"})
 	})
@@ -21,10 +21,8 @@ func main() {
 }
 
 func createEvent(c *gin.Context) {
-	db.InitDB()
 	var event models.Event
 	err := c.ShouldBindJSON(&event)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "Invalid data"})
 		return
