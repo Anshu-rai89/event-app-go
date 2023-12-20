@@ -13,4 +13,5 @@ func RegisterRoutes(app *gin.Engine) {
 	app.POST("/event", createEvent)
 	app.GET("/event", getEvents)
 	app.GET("/event/:id", getEvent)
+	app.PUT("/event/:id", updateEvent)
 }

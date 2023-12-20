@@ -47,3 +47,50 @@ func getEvent(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"msg": "Event fetch success", "data": event})
 }
+
+func updateEvent(c *gin.Context) {
+	var event models.Event
+	var eventId int64
+	var err error
+	eventId, err = strconv.ParseInt(c.Param("id"), 10, 64)
+
+	_, err = models.GetEventByID(eventId)
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"msg": "Invalid eventId"})
+		return
+	}
+
+	err = c.ShouldBindJSON(&event)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "Invalid data"})
+		return
+	}
+	event.Id = eventId
+	err = event.UpdateEvent()
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "Server Error"})
+	}
+	c.JSON(http.StatusOK, gin.H{"msg": "Event updated success"})
+}
+
+func deleteEvent(c *gin.Context) {
+	var eventId int64
+	var err error
+	eventId, err = strconv.ParseInt(c.Param("id"), 10, 64)
+
+	_, err = models.GetEventByID(eventId)
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"msg": "Invalid eventId"})
+		return
+	}
+
+	err = models.DeleteEvent(eventId)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "Server Error"})
+	}
+	c.JSON(http.StatusOK, gin.H{"msg": "Event deleted success"})
+}
