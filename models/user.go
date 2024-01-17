@@ -1,6 +1,9 @@
 package models
 
-import "github.com/Anshu-rai89/event-app-go/db"
+import (
+	"github.com/Anshu-rai89/event-app-go/db"
+	"github.com/Anshu-rai89/event-app-go/utils"
+)
 
 type User struct {
 	ID       int64
@@ -20,7 +23,13 @@ func (u User) Save() error {
 
 	defer stmt.Close()
 
-	results, err := stmt.Exec(u.Name, u.Email, u.Password)
+	hashPassword, err := utils.HashPassword(u.Password)
+
+	if err != nil {
+		return err
+	}
+
+	results, err := stmt.Exec(u.Name, u.Email, hashPassword)
 
 	if err != nil {
 		return err
