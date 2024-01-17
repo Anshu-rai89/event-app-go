@@ -3,6 +3,7 @@ package routes
 import (
 	"net/http"
 
+	"github.com/Anshu-rai89/event-app-go/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
@@ -10,10 +11,14 @@ func RegisterRoutes(app *gin.Engine) {
 	app.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"msg": "Hello world"})
 	})
-	app.POST("/event", createEvent)
-	app.GET("/event", getEvents)
-	app.GET("/event/:id", getEvent)
-	app.PUT("/event/:id", updateEvent)
+
+	authenticated := app.Group("/")
+	authenticated.Use(middlewares.Authenticate)
+	authenticated.POST("/event", createEvent)
+	authenticated.GET("/event", getEvents)
+	authenticated.GET("/event/:id", getEvent)
+	authenticated.PUT("/event/:id", updateEvent)
+
 	app.POST("/user/signup", createUser)
 	app.POST("/user/login", loginUser)
 }

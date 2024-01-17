@@ -15,8 +15,9 @@ func createEvent(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "Invalid data"})
 		return
 	}
-	event.Id = 1
-	event.UserId = 1
+
+	userId := c.GetInt64("userId")
+	event.UserId = userId
 	err = event.Save()
 
 	if err != nil {
