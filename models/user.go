@@ -1,6 +1,8 @@
 package models
 
 import (
+	"errors"
+
 	"github.com/Anshu-rai89/event-app-go/db"
 	"github.com/Anshu-rai89/event-app-go/utils"
 )
@@ -23,13 +25,13 @@ func (u User) Save() error {
 
 	defer stmt.Close()
 
-	hashPassword, err := utils.HashPassword(u.Password)
+	//hashPassword, err := utils.HashPassword(u.Password)
 
 	if err != nil {
 		return err
 	}
 
-	results, err := stmt.Exec(u.Name, u.Email, hashPassword)
+	results, err := stmt.Exec(u.Name, u.Email, u.Password)
 
 	if err != nil {
 		return err
@@ -38,5 +40,21 @@ func (u User) Save() error {
 	userId, err := results.LastInsertId()
 
 	u.ID = userId
+	return err
+}
+
+func (u User) ValidatePassword() error {
+	query := `SELECT password FROM users WHERE email = ?`
+
+	row := db.DB.QueryRow(query, u.Email)
+
+	var password string
+	err := row.Scan(&password)
+
+	println("Password", password, " ", u.Password)
+	if err != nil {
+		return errors.New("Invalid creds")
+	}
+	err = utils.CheckPassword(u.Password, password)
 	return err
 }
