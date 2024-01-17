@@ -15,10 +15,10 @@ func RegisterRoutes(app *gin.Engine) {
 	authenticated := app.Group("/")
 	authenticated.Use(middlewares.Authenticate)
 	authenticated.POST("/event", createEvent)
-	authenticated.GET("/event", getEvents)
-	authenticated.GET("/event/:id", getEvent)
 	authenticated.PUT("/event/:id", updateEvent)
 
 	app.POST("/user/signup", createUser)
 	app.POST("/user/login", loginUser)
+	app.GET("/event", getEvents)
+	app.GET("/event/:id", getEvent)
 }

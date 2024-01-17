@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/Anshu-rai89/event-app-go/models"
@@ -42,6 +43,7 @@ func loginUser(c *gin.Context) {
 
 	token, err := utils.GenerateToken(user.Email, user.ID)
 
+	fmt.Println("token", token, err)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"msg": "Invalid credentials"})
 		return
